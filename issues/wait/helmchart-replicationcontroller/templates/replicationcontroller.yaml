@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: {{ include "helmchart-replicationcontroller.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    {{- include "helmchart-replicationcontroller.selectorLabels" . | nindent 4 }}
+  template:
+    metadata:
+      labels:
+        {{- include "helmchart-replicationcontroller.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        ports:
+        - containerPort: 80
